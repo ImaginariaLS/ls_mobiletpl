@@ -2,17 +2,30 @@
 
 class PluginMobiletpl_HookMain extends Hook
 {
+    const ConfigKey = 'mobiletpl';
+    const HooksArray = [
+        'viewer_init_start'  =>  'ViewerInitStart',
+        'lang_init_start' => 'LangInitStart',
+        'template_footer_menu_navigate_item' => 'MenuItem',
+        'template_profile_whois_activity_item' => 'WhoisActivityItem',
+        'init_action' => 'InitAction',
+        'topic_show' => 'TopicShow',
+
+    ];
 
     protected $bIsNeedShowMobile = null;
 
     public function RegisterHook()
     {
-        $this->AddHook('viewer_init_start', 'ViewerInitStart');
-        $this->AddHook('lang_init_start', 'LangInitStart');
-        $this->AddHook('template_footer_menu_navigate_item', 'MenuItem');
-        $this->AddHook('template_profile_whois_activity_item', 'WhoisActivityItem');
-        $this->AddHook('init_action', 'InitAction');
-        $this->AddHook('topic_show', 'TopicShow');
+        $plugin_config_key = $this::ConfigKey;
+        foreach ($this::HooksArray as $hook => $callback) {
+            $this->AddHook(
+                $hook,
+                $callback,
+                __CLASS__,
+                Config::Get("plugin.{$plugin_config_key}.hook_priority.{$hook}") ?? 1
+            );
+        }
     }
 
     public function InitAction()
@@ -85,6 +98,7 @@ class PluginMobiletpl_HookMain extends Hook
     public function TopicShow($aParams)
     {
         $oTopic = $aParams['oTopic'];
+
         /**
          * Если активен плагин "ViewCount", то ничего не делаем
          */
@@ -92,6 +106,7 @@ class PluginMobiletpl_HookMain extends Hook
         if (array_key_exists('viewcount', $aPlugins)) {
             return;
         }
+
         /**
          * Если топик просматривает его автор - пропускаем
          */
