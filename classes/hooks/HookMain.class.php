@@ -48,7 +48,7 @@ class PluginMobiletpl_HookMain extends Hook
 
         $this->Viewer_Assign('iCountWallUserCurrent', $this->Wall_GetCountWall(array('wall_user_id' => $oUserCurrent->getId(), 'pid' => null)));
         /**
-         * Общее число публикация и избранного
+         * Общее число публикаций и избранного
          */
         $this->Viewer_Assign('iCountCreatedUserCurrent', $iCountNoteUser + $iCountTopicUser + $iCountCommentUser);
         $this->Viewer_Assign('iCountFavouriteUserCurrent', $iCountCommentFavourite + $iCountTopicFavourite);

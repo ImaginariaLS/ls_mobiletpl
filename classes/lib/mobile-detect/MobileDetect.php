@@ -14,24 +14,33 @@ class MobileDetect
         if ($bHard) {
             return self::IsNeedShowMobile();
         } else {
-            return Config::Get('plugin.mobiletpl.template') && Config::Get('view.skin') == Config::Get('plugin.mobiletpl.template');
+            return 
+                Config::Get('plugin.mobiletpl.template') 
+                && 
+                ( Config::Get('view.skin') == Config::Get('plugin.mobiletpl.template') );
         }
     }
 
+    /**
+     * Определяет, какую версию - мобильную или полную нужно загружать
+     * и устанавливает соответственно этому куку "use_mobile"
+     * 
+     * @return bool|null
+     */
     static public function IsNeedShowMobile()
     {
         if (!is_null(self::$bIsNeedShowMobile)) {
             return self::$bIsNeedShowMobile;
         }
         /**
-         * Принудительно включаем мобильную версию
+         * Проверяем принудительную активацию мобильной версии
          */
         if (getRequest('force-mobile', false, 'get') == 'on') {
             setcookie('use_mobile', 1, time() + 60 * 60 * 24 * 30, Config::Get('sys.cookie.path'), Config::Get('sys.cookie.host'), false);
             return self::$bIsNeedShowMobile = true;
         }
         /**
-         * Принудительно включаем полную версию
+         * Проверяем принудительную активацию полной версии
          */
         if (getRequest('force-mobile', false, 'get') == 'off') {
             setcookie('use_mobile', 0, time() + 60 * 60 * 24 * 30, Config::Get('sys.cookie.path'), Config::Get('sys.cookie.host'), false);
@@ -66,6 +75,9 @@ class MobileDetect
      */
     static public function DetectMobileDevice()
     {
+        
+        $detect = new Mobile_Detect;
+        
         $aRequest = array();
         if (isset($_SERVER)) {
             $aServer = $_SERVER;
